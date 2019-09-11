@@ -11,6 +11,16 @@
         
     </style>
     <body>
+        <button id="searchButton" onclick="showSearchMenu()">Cerca</button>
+        <div id="filter" style="display: none";>
+                Titolo
+                <input type="text" id="filterTitle">
+                Autore
+                <input type="text" id="filterAuthor">
+            <button onclick="searchBooks()">Filtra</button>
+            <button onclick="hideSearchMenu()">Nascondi</button>
+        </div>
+        <hr>
         <table id="listaLibri">
             <thead>
                 <th>Titolo</th>
@@ -20,6 +30,7 @@
             <tbody>
             </tbody>
         </table>
+        <hr>
             <table id="nuovoLibro">
                 <tbody>
                 </br>

@@ -138,5 +138,38 @@ function refreshList() {
     primoCaricamento();
 }
 
+function showSearchMenu() {
+    $("#filter").show();
+    $("#searchButton").hide();
+}
+
+function hideSearchMenu() {
+    $("#filter").hide();
+    $("#searchButton").show();
+}
+
+function searchBooks() {
+
+    var filterTitle = $("#filterTitle").val();
+    var filterAuthor = $("#filterAuthor").val();
+
+    $.ajax({
+        type : "POST",  
+        url  : "http://localhost:8888/cercalibro",  
+        data : { 
+            titolo : filterTitle,
+            autore : filterAuthor
+        }, 
+        success: function(res) {
+
+            $("#listaLibri tbody").empty();
+            aggiornaTabellaLibriConLibriPresiDalServer(res);
+            $("#filter").append("<button id='clear' onclick='refreshList()')>Clear</button>");
+            
+        },
+        dataType : "json"
+
+    });
+}
 
 $(document).ready(primoCaricamento);

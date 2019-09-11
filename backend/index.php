@@ -34,6 +34,14 @@ if ($_SERVER['REQUEST_URI'] == '/libro') {
     $query = "DELETE FROM `libri` WHERE `libri`.`id` = $id;";
     $sql = mysqli_query($connection, $query);
     //ok
+} elseif ($_SERVER['REQUEST_URI'] == '/cercalibro' && $_SERVER['REQUEST_METHOD'] == 'POST') {
+    $titolo = $_POST['titolo'];
+    $autore = $_POST['autore'];
+    $query = "SELECT title, author, price FROM libri WHERE title LIKE '$titolo%' AND author LIKE '$autore%'";
+    $sql = mysqli_query($connection, $query);
+    $array = mysqli_fetch_all($sql, MYSQLI_ASSOC);
+    echo json_encode(['data' => $array]); 
+
 } else {
     echo "{
         \"error\": \"Richiesta non supportata\"        
