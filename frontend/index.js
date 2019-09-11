@@ -1,51 +1,46 @@
 
-function createInput(bookId, bookTitle, bookAuthor, bookPrice){
+function showForm(bookId, bookTitle, bookAuthor, bookPrice){
     if (!bookId) {
         bookId = 0;
         bookTitle = "";
         bookAuthor = "";
         bookPrice = "";
     }
-    var newBookInput = '<style>#nuovoLibro{padding: 5px;border: 0.5px solid black;}</style>'
-    +'<strong> Inserisci nuovo libro</strong>'+
-    '<input type="text" style="display: none;" id="newBookId" value='+ bookId + ' />'+
-    '</br>Titolo:   <input type="text" id="newBookTitle" value="'+ bookTitle +'" /> <br/> Autore: '+
-    '<input type="text" id="newBookAuthor" value="'+ bookAuthor +'"/> <br/> Prezzo:  <input type="text" id="newBookPrice" value="'+ bookPrice +'"/>'+
-    '</br><button id="saveNewBook" onclick="newBookAlert();">Salva</button>'+
-    '<button id="backButton" onclick="hideNewBookForm();">Indietro</button>';
-    document.getElementById("nuovoLibro").innerHTML = newBookInput;
+    $("#bookId").val(bookId);
+    $("#bookTitle").val(bookTitle);
+    $("#bookAuthor").val(bookAuthor);
+    $("#bookPrice").val(bookPrice);
+    $("#manageBook").show();
     $('#buttonNewBook').hide();
-    $('#nuovoLibro').show();
-    
 }
 
 function hideMessageBox() {
     $("#messageBox").hide();
 }
 
-function newBookAlert() {
-    var id = $("#newBookId").val();
-    var titolo = $("#newBookTitle").val();
-    var autore = $("#newBookAuthor").val();
-    var prezzo = $("#newBookPrice").val();
+function saveBook() {
+    var id = $("#bookId").val();
+    var titolo = $("#bookTitle").val();
+    var autore = $("#bookAuthor").val();
+    var prezzo = $("#bookPrice").val();
 
     $.ajax({
-    type : "POST",  
-    url  : "http://localhost:8888/salvalibro",  
-    data : { 
-        id : id,
-        titolo : titolo, 
-        autore : autore, 
-        prezzo : prezzo
-    }, 
-    success: function(res){
-        $("#messageBox").show();
-        $("#messageBox").text("Hai inserito " + titolo);
-        setTimeout(hideMessageBox, 1000);
-        }
+        type : "POST",  
+        url  : "http://localhost:8888/salvalibro",  
+        data : { 
+            id : id,
+            titolo : titolo, 
+            autore : autore, 
+            prezzo : prezzo
+        }, 
+        success: function(res){
+            $("#messageBox").show();
+            $("#messageBox").text("Hai inserito " + titolo);
+            setTimeout(hideMessageBox, 1000);
+            refreshList();
+        }    
     });
-    hideNewBookForm();
-    refreshList();
+    hideBookForm();
     //il problema sembra essere che ogni tanto usi delle funzioni ordinate (hideNewBook) e ogni tanto fai a mano hide e show, quindi si incasina. infatti
     //delle volte non aggiorna e poi ne carica due insieme quello è strano...cq il concetto sembra sia passato xk funziona tutto.
     //poi diventa questione di pratica, aggiungi la possibilita di cancellare libri e magari un tasto "modifica" che ti apre la form di inserimento ma 
@@ -53,8 +48,8 @@ function newBookAlert() {
     //provo, sta cosa dei bottoni mi fa andare in bestia vabbe dai, chiudo e decido cosa fare. lmk
     }
     
-function hideNewBookForm() {
-    $("#nuovoLibro").hide();
+function hideBookForm() {
+    $("#manageBook").hide();
     $('#buttonNewBook').show();
     }
 
@@ -69,12 +64,12 @@ function aggiornaTabellaLibriConLibriPresiDalServer(response) {
     //a questo punto ti trovi qui ed hai response = {data: [{titolo: 'guido', autore:'g.s.', prezzo:19}, {titolo:'cane contro cane', autore: 'umb', prezzo: 2}]}
     //quindi prendi data e lo salvi in una variabile (libri) e, sapendo che è un array, ci cicli sopra per lanciare la funzione aggiorna...
     var libri = response.data; //questa non ricordo bene cosa faccia, la sto prendendo per buona,
-    $.each (libri, aggiornaTabellaLibriConLibro); //qui? cicla?si, $.each è una funzione di jQuery, asp
+    $.each (libri, aggiungiLibroATabella); //qui? cicla?si, $.each è una funzione di jQuery, asp
     //per ogni "libri" lancia aggioranTabellaLibri.
     
 }
 
-function aggiornaTabellaLibriConLibro(index, libro, autore, prezzo) {
+function aggiungiLibroATabella(index, libro, autore, prezzo) {
     //qua dentro, come da documentazione, hai index = 1,2,3 a seconda dell'iterazione in cui ti trovi
     //e libro contiene il libro (e.g. {titolo: 'guido', autore:'g.s.', prezzo:19})
     //quindi ti salvi i suoi attributi in variabili i li usi per appendere una <tr>
@@ -85,11 +80,10 @@ function aggiornaTabellaLibriConLibro(index, libro, autore, prezzo) {
     var titolo = libro.title;
     var autore = libro.author;
     var prezzo = libro.price;
-    //debugger;
     $("#listaLibri tbody").append("<tr><td id ="+id+" style='display: none' value='"+id+"'></td><td value="+ titolo +">" + 
     titolo + "</td><td>" + autore + "</td><td>" + prezzo + " euro</td>"+
     "<td><button id='deleteButton' onclick=deleteBook(event)>Cancella</button></td>"+
-    '<td><button id=\'editButton\' onclick="createInput(' + id + ' , \'' + titolo + '\' , \'' + autore + '\' , ' + prezzo + '  )">Modifica</button></td></tr>')
+    '<td><button id=\'editButton\' onclick="showForm(' + id + ' , \'' + titolo + '\' , \'' + autore + '\' , ' + prezzo + '  )">Modifica</button></td></tr>')
     
 }
 
@@ -125,7 +119,7 @@ function deleteBook(event) {
     //io mi ricarco (ma senza aspettare che tu l'abbia cancellata
 }
 
-function primoCaricamento() {                
+function aggiornaTabellaLibri() {                
     $.ajax({
         url: "http://localhost:8888/libro", //url da chiamare
         dataType: 'json', //tipo di risposta che mi aspetto (un json)
@@ -135,7 +129,9 @@ function primoCaricamento() {
 
 function refreshList() {
     $("#listaLibri tbody").empty();
-    primoCaricamento();
+    $("#filterTitle").val(null);
+    $("#filterAuthor").val(null);
+    aggiornaTabellaLibri();
 }
 
 function showSearchMenu() {
@@ -172,4 +168,4 @@ function searchBooks() {
     });
 }
 
-$(document).ready(primoCaricamento);
+$(document).ready(aggiornaTabellaLibri);

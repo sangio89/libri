@@ -31,14 +31,15 @@
             </tbody>
         </table>
         <hr>
-            <table id="nuovoLibro">
-                <tbody>
-                </br>
-                    <form method="POST">
-                            <button id="buttonNewBook" onclick="createInput();">Nuovo Libro</button>
-                    </form>
-                </tbody>
-            </table>
+        <button id="buttonNewBook" onclick="showForm();">Nuovo Libro</button>
+        <div id="manageBook" style="display: none;">
+            <strong>Gestore Libro</strong>
+            <input type="text" id="bookId" style="display: none;"/>
+            </br>Titolo:   <input type="text" id="bookTitle"/> <br/> Autore: 
+            <input type="text" id="bookAuthor"/> <br/> Prezzo:  <input type="text" id="bookPrice"/>
+            </br><button id="saveNewBook" onclick="saveBook();">Salva</button>
+            <button id="backButton" onclick="hideBookForm();">Indietro</button>
+        </div>
             <div id="messageBox" style="display: none; border: 1px solid red; color: red"></div>
-    </body>
+        </body>
 </html>
