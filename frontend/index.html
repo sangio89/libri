@@ -1,0 +1,45 @@
+<html>
+    <head>
+        <script type = "text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src ="index.js"></script>
+    </head>
+   <style>
+        #listaLibri {
+            text-align: left;
+            padding: 5px
+        }
+        #bookAlert {
+            color:red
+        }
+        #bookDeleted {
+            color:red
+        }
+    </style>
+    <body>
+        <table id="listaLibri">
+            <thead>
+                <th>Titolo</th>
+                <th>Autore</th>
+                <th>Prezzo</th>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+            <table id="nuovoLibro">
+                <tbody>
+                </br>
+                    <form method="POST">
+                            <button id="buttonNewBook" onclick="createInput();">Nuovo Libro</button>
+                    </form>
+                </tbody>
+            </table>
+            <table id="redTab">
+                <tr>
+                <p id="bookAlert"></p>
+                </tr>
+                <tr>
+                <p id="bookDeleted"></p>
+                </tr>
+            </table>
+    </body>
+</html>
