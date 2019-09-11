@@ -19,11 +19,15 @@ function createInput(bookId, bookTitle, bookAuthor, bookPrice){
     
 }
 
+function hideMessageBox() {
+    $("#messageBox").hide();
+}
+
 function newBookAlert() {
-    var id = document.getElementById("newBookId").value;
-    var titolo = document.getElementById("newBookTitle").value;
-    var autore = document.getElementById("newBookAuthor").value;
-    var prezzo = document.getElementById("newBookPrice").value;
+    var id = $("#newBookId").val();
+    var titolo = $("#newBookTitle").val();
+    var autore = $("#newBookAuthor").val();
+    var prezzo = $("#newBookPrice").val();
 
     $.ajax({
     type : "POST",  
@@ -34,9 +38,10 @@ function newBookAlert() {
         autore : autore, 
         prezzo : prezzo
     }, 
-    success: function(res){ 
-        document.getElementById("bookAlert").innerHTML = "<style>#bookAlert{padding: 5px;border: 0.5px solid red;}</style>Hai inserito un nuovo libro";
-                         
+    success: function(res){
+        $("#messageBox").show();
+        $("#messageBox").text("Hai inserito " + titolo);
+        setTimeout(hideMessageBox, 1000);
         }
     });
     hideNewBookForm();
@@ -109,7 +114,9 @@ function deleteBook(event) {
             
             var titolo = $($(event.target).parent().parent().children()[1]).text();
             refreshList();
-            document.getElementById("bookDeleted").innerHTML = "<style>#bookDeleted{padding: 5px;border: 0.5px solid red;}</style>Hai cancellato " + titolo;
+            $("#messageBox").show();
+            $("#messageBox").text("Hai cancellato " + titolo);
+            setTimeout(hideMessageBox, 1000);
             }
     });
 
