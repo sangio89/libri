@@ -63,8 +63,8 @@ function hideAlert() {
 function aggiornaTabellaLibriConLibriPresiDalServer(response) {
     //a questo punto ti trovi qui ed hai response = {data: [{titolo: 'guido', autore:'g.s.', prezzo:19}, {titolo:'cane contro cane', autore: 'umb', prezzo: 2}]}
     //quindi prendi data e lo salvi in una variabile (libri) e, sapendo che è un array, ci cicli sopra per lanciare la funzione aggiorna...
-    var libri = response.data; //questa non ricordo bene cosa faccia, la sto prendendo per buona,
-    $.each (libri, aggiungiLibroATabella); //qui? cicla?si, $.each è una funzione di jQuery, asp
+    var libri = response.data;
+    $.each (libri, aggiungiLibroATabella); //qui? cicla?si, $.each è una funzione di jQuery
     //per ogni "libri" lancia aggioranTabellaLibri.
     
 }
@@ -119,9 +119,13 @@ function deleteBook(event) {
     //io mi ricarco (ma senza aspettare che tu l'abbia cancellata
 }
 
-function aggiornaTabellaLibri() {                
-    $.ajax({
-        url: "http://localhost:8888/libro", //url da chiamare
+function aggiornaTabellaLibri(pageNumber) {                
+    $.ajax({        //jquery.ajax(): Esegue una richiesta HTTP asincrona (Ajax).
+        type : "POST",
+        url: "http://localhost:8888/libro",
+        data: {
+            pageNumber : pageNumber
+        } , //url da chiamare
         dataType: 'json', //tipo di risposta che mi aspetto (un json)
         success: aggiornaTabellaLibriConLibriPresiDalServer //cosa me ne faccio del json? lo passo (come oggetto JS) ad una funzione, quale? aggiornaTabellaLibriConLibriPresiDalServer
     });
@@ -131,7 +135,7 @@ function refreshList() {
     $("#listaLibri tbody").empty();
     $("#filterTitle").val(null);
     $("#filterAuthor").val(null);
-    aggiornaTabellaLibri();
+    aggiornaTabellaLibri(pageNumber);
 }
 
 function showSearchMenu() {
@@ -167,5 +171,14 @@ function searchBooks() {
 
     });
 }
+pageNumber = 1;
+$(document).ready(aggiornaTabellaLibri(pageNumber));
 
-$(document).ready(aggiornaTabellaLibri);
+function nextPage() {
+    pageNumber++;
+    refreshList();
+}
+function previousPage() {
+    pageNumber--;
+    refreshList();
+}
