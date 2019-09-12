@@ -31,7 +31,7 @@
             </tbody>
         </table>
         <hr>
-        <table><tr><td><button id="buttonNewBook" onclick="showForm();">Nuovo Libro</button></td><td><button id="backButton" onclick="previousPage()"> <- </button> - <button id="forwardButton" onclick="nextPage()"> -> </button></td></tr></table>
+        <table><tr><td><button id="buttonNewBook" onclick="showForm();">Nuovo Libro</button></td><td><button id="backButton" onclick="previousPage()"> <- </button> pagina <span id="pageNumber"></span> di <span id="maxPageNumber"></span> <button id="forwardButton" onclick="nextPage()"> -> </button></td></tr></table>
         <div id="manageBook" style="display: none;">
             <strong>Gestore Libro</strong>
             <input type="text" id="bookId" style="display: none;"/>

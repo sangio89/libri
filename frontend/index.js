@@ -64,8 +64,11 @@ function aggiornaTabellaLibriConLibriPresiDalServer(response) {
     //a questo punto ti trovi qui ed hai response = {data: [{titolo: 'guido', autore:'g.s.', prezzo:19}, {titolo:'cane contro cane', autore: 'umb', prezzo: 2}]}
     //quindi prendi data e lo salvi in una variabile (libri) e, sapendo che è un array, ci cicli sopra per lanciare la funzione aggiorna...
     var libri = response.data;
+    maxPageNumber = response.maxPageNumber;
     $.each (libri, aggiungiLibroATabella); //qui? cicla?si, $.each è una funzione di jQuery
     //per ogni "libri" lancia aggioranTabellaLibri.
+    $("#pageNumber").text(globalPageNumber);
+    $("#maxPageNumber").text(maxPageNumber);
     
 }
 
@@ -135,7 +138,7 @@ function refreshList() {
     $("#listaLibri tbody").empty();
     $("#filterTitle").val(null);
     $("#filterAuthor").val(null);
-    aggiornaTabellaLibri(pageNumber);
+    aggiornaTabellaLibri(globalPageNumber);
 }
 
 function showSearchMenu() {
@@ -158,7 +161,8 @@ function searchBooks() {
         url  : "http://localhost:8888/cercalibro",  
         data : { 
             titolo : filterTitle,
-            autore : filterAuthor
+            autore : filterAuthor,
+            pageNumber : 1
         }, 
         success: function(res) {
 
@@ -171,14 +175,21 @@ function searchBooks() {
 
     });
 }
-pageNumber = 1;
-$(document).ready(aggiornaTabellaLibri(pageNumber));
+
+
+globalPageNumber = 1;
+
+$(document).ready(aggiornaTabellaLibri(globalPageNumber));
 
 function nextPage() {
-    pageNumber++;
-    refreshList();
+    if (globalPageNumber < maxPageNumber) {
+        globalPageNumber++;
+        refreshList(); 
+    }
 }
 function previousPage() {
-    pageNumber--;
-    refreshList();
-}
+    if (globalPageNumber == maxPageNumber) {
+        globalPageNumber--;
+        refreshList();
+    }
+} 
