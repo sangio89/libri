@@ -158,7 +158,7 @@ function searchBooks() {
 
     $.ajax({
         type : "POST",  
-        url  : "http://localhost:8888/cercalibro",  
+        url  : "http://localhost:8888/libro",  
         data : { 
             titolo : filterTitle,
             autore : filterAuthor,
