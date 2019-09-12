@@ -20,16 +20,12 @@ if ($_SERVER['REQUEST_URI'] == '/libro') {
     $titolo = $_POST['titolo'];
     $autore = $_POST['autore'];
     $prezzo = $_POST['prezzo'];
-    if ($id == 0){
-        $query = "INSERT INTO libri (title, author, price)  VALUES ('$titolo','$autore',$prezzo)";
-    } else {
-        $query = "UPDATE libri SET title = '$titolo' , author = '$autore' , price = $prezzo WHERE libri.id = $id;";
-    }
-    $sql = mysqli_query($connection, $query);
+
+    $salvaLibro = salvoIlLibro($connection, $titolo, $autore, $prezzo, $id);
 } elseif ($_SERVER['REQUEST_URI'] == '/cancellalibro' && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $id = $_POST['id'];
-    $query = "DELETE FROM `libri` WHERE `libri`.`id` = $id;";
-    $sql = mysqli_query($connection, $query);
+
+    $cancellaLibro = cancellaIlLibro($connection, $id);
 } else {
     echo "{
         \"error\": \"Richiesta non supportata\"
@@ -67,4 +63,20 @@ function eseguoLaQueryDiLetturaLibri($connection, $titolo, $autore, $fromRecord,
 
     $records = mysqli_query($connection, $query);
     return mysqli_fetch_all($records, MYSQLI_ASSOC);
+}
+
+function salvoIlLibro ($connection, $titolo, $autore, $prezzo, $id) 
+{
+    if ($id == 0){
+        $query = "INSERT INTO libri (title, author, price)  VALUES ('$titolo','$autore',$prezzo)";
+    } else {
+        $query = "UPDATE libri SET title = '$titolo' , author = '$autore' , price = $prezzo WHERE libri.id = $id;";
+    }
+    return mysqli_query($connection, $query);
+}
+
+function cancellaIlLibro ($connection, $id)
+{
+    $query = "DELETE FROM `libri` WHERE `libri`.`id` = $id;";
+    return mysqli_query($connection, $query);
 }
