@@ -174,7 +174,7 @@ function nextPage() {
     }
 }
 function previousPage() {
-    if (globalPageNumber == maxPageNumber) {
+    if (globalPageNumber == maxPageNumber && globalPageNumber > 1) {
         globalPageNumber--;
         refreshList();
     }
