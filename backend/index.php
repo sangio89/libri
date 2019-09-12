@@ -10,28 +10,11 @@ if ($_SERVER['REQUEST_URI'] == '/libro') {
     $pageNumber = $_POST['pageNumber'];
     $pageSize = 5;
     $fromRecord = ($pageNumber * $pageSize) - $pageSize;
-    if ($titolo !== null || $autore !== null) {
-        $countFilteredRecords = mysqli_query($connection, "SELECT COUNT(*) AS TOTALE_LIBRI FROM libri WHERE title LIKE '$titolo%' AND author LIKE '$autore%'");
-        $row = mysqli_fetch_array($countFilteredRecords);
-    } else {
-        $countRecords = mysqli_query($connection, "SELECT COUNT(*) AS TOTALE_LIBRI FROM libri");
-        $row = mysqli_fetch_array($countRecords);
-    }
-    $initPageNumber = $row[TOTALE_LIBRI]/$pageSize;
-    if (is_int($initPageNumber)) {
-        $maxPageNumber = $initPageNumber;
-    } else {
-        $maxPageNumber = round($initPageNumber, 0) + 1;
-    }
-    if ($titolo !== null || $autore !== null) {
-        $filteredQuery = mysqli_query($connection, "SELECT title, author, price FROM libri WHERE title LIKE '$titolo%' AND author LIKE '$autore%' ORDER BY title ASC LIMIT $fromRecord, $pageSize");
-        $row = mysqli_fetch_all($filteredQuery, MYSQLI_ASSOC);
-    } else {
-        $query = mysqli_query($connection, "SELECT id, title, author, price FROM libri ORDER BY title ASC LIMIT $fromRecord, $pageSize");
-        $row = mysqli_fetch_all($query, MYSQLI_ASSOC);
-    }
-    echo json_encode(['data' => $row, 'maxPageNumber' => $maxPageNumber]); //ecco la tua response, un array in formato JSON che contiene una chiave "data" con dentro tutti i libri.
 
+    $rowNumber = eseguoLaQueryDiCount($connection, $titolo, $autore);
+    $maxPageNumber = ottengoIlMaxPageNumber($rowNumber, $pageSize);
+    $data = eseguoLaQueryDiLetturaLibri($connection, $titolo, $autore, $fromRecord, $pageSize);
+    echo json_encode(['data' => $data, 'maxPageNumber' => $maxPageNumber]);
 } elseif ($_SERVER['REQUEST_URI'] == '/salvalibro' && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $id = $_POST['id'];
     $titolo = $_POST['titolo'];
@@ -39,19 +22,49 @@ if ($_SERVER['REQUEST_URI'] == '/libro') {
     $prezzo = $_POST['prezzo'];
     if ($id == 0){
         $query = "INSERT INTO libri (title, author, price)  VALUES ('$titolo','$autore',$prezzo)";
-        $sql = mysqli_query($connection, $query);}
-    else {
+    } else {
         $query = "UPDATE libri SET title = '$titolo' , author = '$autore' , price = $prezzo WHERE libri.id = $id;";
-        $sql = mysqli_query($connection, $query);
     }
-    //
+    $sql = mysqli_query($connection, $query);
 } elseif ($_SERVER['REQUEST_URI'] == '/cancellalibro' && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $id = $_POST['id'];
     $query = "DELETE FROM `libri` WHERE `libri`.`id` = $id;";
     $sql = mysqli_query($connection, $query);
-    //ok
 } else {
     echo "{
-        \"error\": \"Richiesta non supportata\"        
+        \"error\": \"Richiesta non supportata\"
     }";
+}
+
+function eseguoLaQueryDiCount($connection, $titolo, $autore)
+{
+    $query = "SELECT COUNT(*) AS TOTALE_LIBRI FROM libri";
+    if ($titolo !== null || $autore !== null) {
+        $query .= " WHERE title LIKE '$titolo%' AND author LIKE '$autore%'";
+    }
+    $countRecords = mysqli_query($connection, $query);
+    return mysqli_fetch_array($countRecords);
+}
+
+function ottengoIlMaxPageNumber($countRow, $pageSize)
+{
+    $initPageNumber = $countRow['TOTALE_LIBRI'] / $pageSize;
+    if (is_int($initPageNumber)) {
+        $maxPageNumber = $initPageNumber;
+    } else {
+        $maxPageNumber = floor($initPageNumber) + 1;
+    }
+    return $maxPageNumber;
+}
+
+function eseguoLaQueryDiLetturaLibri($connection, $titolo, $autore, $fromRecord, $pageSize)
+{
+    $query = "SELECT id, title, author, price FROM libri";
+    if ($titolo !== null || $autore !== null) {
+        $query .= " WHERE title LIKE '$titolo%' AND author LIKE '$autore%'";
+    }
+    $query .= " ORDER BY title ASC LIMIT $fromRecord, $pageSize";
+
+    $records = mysqli_query($connection, $query);
+    return mysqli_fetch_all($records, MYSQLI_ASSOC);
 }

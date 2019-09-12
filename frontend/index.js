@@ -123,15 +123,25 @@ function deleteBook(event) {
 }
 
 function aggiornaTabellaLibri(pageNumber) {                
+    var filterTitle = $("#filterTitle").val();
+    var filterAuthor = $("#filterAuthor").val();
+    
     $.ajax({        //jquery.ajax(): Esegue una richiesta HTTP asincrona (Ajax).
         type : "POST",
         url: "http://localhost:8888/libro",
         data: {
+            titolo : filterTitle,
+            autore : filterAuthor,
             pageNumber : pageNumber
         } , //url da chiamare
         dataType: 'json', //tipo di risposta che mi aspetto (un json)
-        success: aggiornaTabellaLibriConLibriPresiDalServer //cosa me ne faccio del json? lo passo (come oggetto JS) ad una funzione, quale? aggiornaTabellaLibriConLibriPresiDalServer
+        success: aggiornaContenutoTabella //cosa me ne faccio del json? lo passo (come oggetto JS) ad una funzione, quale? aggiornaTabellaLibriConLibriPresiDalServer
     });
+}
+
+function aggiornaContenutoTabella(response) {
+    $("#listaLibri tbody").empty();
+    aggiornaTabellaLibriConLibriPresiDalServer(response)
 }
 
 function refreshList() {
@@ -151,30 +161,6 @@ function hideSearchMenu() {
     $("#searchButton").show();
 }
 
-function searchBooks() {
-
-    var filterTitle = $("#filterTitle").val();
-    var filterAuthor = $("#filterAuthor").val();
-
-    $.ajax({
-        type : "POST",  
-        url  : "http://localhost:8888/libro",  
-        data : { 
-            titolo : filterTitle,
-            autore : filterAuthor,
-            pageNumber : 1
-        }, 
-        success: function(res) {
-
-            $("#listaLibri tbody").empty();
-            aggiornaTabellaLibriConLibriPresiDalServer(res);
-            $("#filter").append("<button id='clear' onclick='refreshList()')>Clear</button>");
-            
-        },
-        dataType : "json"
-
-    });
-}
 
 
 globalPageNumber = 1;
