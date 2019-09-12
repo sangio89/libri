@@ -52,7 +52,7 @@ function aggiungiLibroATabella(index, libro, autore, prezzo) {
     var autore = libro.author;
     var prezzo = libro.price;
     $("#listaLibri tbody").append("<tr><td id ="+id+" style='display: none' value='"+id+"'></td><td value="+ titolo +">" + 
-    titolo + "</td><td>" + autore + "</td><td>" + prezzo + " euro</td>"+
+    titolo + "</td><td>" + autore + "</td><td>" + prezzo + " \u20AC</td>"+
     "<td><button id='deleteButton' onclick=deleteBook(event)>Cancella</button></td>"+
     '<td><button id=\'editButton\' onclick="showForm(' + id + ' , \'' + titolo + '\' , \'' + autore + '\' , ' + prezzo + '  )">Modifica</button></td></tr>')   
 }
