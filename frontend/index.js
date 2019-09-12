@@ -1,21 +1,18 @@
-
-function showForm(bookId, bookTitle, bookAuthor, bookPrice){
-    if (!bookId) {
-        bookId = 0;
-        bookTitle = "";
-        bookAuthor = "";
-        bookPrice = "";
-    }
-    $("#bookId").val(bookId);
-    $("#bookTitle").val(bookTitle);
-    $("#bookAuthor").val(bookAuthor);
-    $("#bookPrice").val(bookPrice);
-    $("#manageBook").show();
-    $('#buttonNewBook').hide();
-}
-
-function hideMessageBox() {
-    $("#messageBox").hide();
+function aggiornaTabellaLibri(pageNumber) {                
+    var filterTitle = $("#filterTitle").val();
+    var filterAuthor = $("#filterAuthor").val();
+    
+    $.ajax({        //jquery.ajax(): Esegue una richiesta HTTP asincrona (Ajax).
+        type : "POST",
+        url: "http://localhost:8888/libro",
+        data: {
+            titolo : filterTitle,
+            autore : filterAuthor,
+            pageNumber : pageNumber
+        } , //url da chiamare
+        dataType: 'json', //tipo di risposta che mi aspetto (un json)
+        success: aggiornaContenutoTabella //cosa me ne faccio del json? lo passo (come oggetto JS) ad una funzione, quale? aggiornaTabellaLibriConLibriPresiDalServer
+    });
 }
 
 function saveBook() {
@@ -41,35 +38,6 @@ function saveBook() {
         }    
     });
     hideBookForm();
-    //il problema sembra essere che ogni tanto usi delle funzioni ordinate (hideNewBook) e ogni tanto fai a mano hide e show, quindi si incasina. infatti
-    //delle volte non aggiorna e poi ne carica due insieme quello è strano...cq il concetto sembra sia passato xk funziona tutto.
-    //poi diventa questione di pratica, aggiungi la possibilita di cancellare libri e magari un tasto "modifica" che ti apre la form di inserimento ma 
-    //sta volta precompilata coi valori del libro che stai modificando, in quel caso dovrai "aggiornare" il record anziche crearlo.
-    //provo, sta cosa dei bottoni mi fa andare in bestia vabbe dai, chiudo e decido cosa fare. lmk
-    }
-    
-function hideBookForm() {
-    $("#manageBook").hide();
-    $('#buttonNewBook').show();
-    }
-
-function hideAlert() {
-    $("#bookAlert").hide();
-    $("#buttonNewBook").show();
-}
-
-//tanto e' vero che poi ci cicli sopra, 
-
-function aggiornaTabellaLibriConLibriPresiDalServer(response) {
-    //a questo punto ti trovi qui ed hai response = {data: [{titolo: 'guido', autore:'g.s.', prezzo:19}, {titolo:'cane contro cane', autore: 'umb', prezzo: 2}]}
-    //quindi prendi data e lo salvi in una variabile (libri) e, sapendo che è un array, ci cicli sopra per lanciare la funzione aggiorna...
-    var libri = response.data;
-    maxPageNumber = response.maxPageNumber;
-    $.each (libri, aggiungiLibroATabella); //qui? cicla?si, $.each è una funzione di jQuery
-    //per ogni "libri" lancia aggioranTabellaLibri.
-    $("#pageNumber").text(globalPageNumber);
-    $("#maxPageNumber").text(maxPageNumber);
-    
 }
 
 function aggiungiLibroATabella(index, libro, autore, prezzo) {
@@ -86,7 +54,17 @@ function aggiungiLibroATabella(index, libro, autore, prezzo) {
     $("#listaLibri tbody").append("<tr><td id ="+id+" style='display: none' value='"+id+"'></td><td value="+ titolo +">" + 
     titolo + "</td><td>" + autore + "</td><td>" + prezzo + " euro</td>"+
     "<td><button id='deleteButton' onclick=deleteBook(event)>Cancella</button></td>"+
-    '<td><button id=\'editButton\' onclick="showForm(' + id + ' , \'' + titolo + '\' , \'' + autore + '\' , ' + prezzo + '  )">Modifica</button></td></tr>')
+    '<td><button id=\'editButton\' onclick="showForm(' + id + ' , \'' + titolo + '\' , \'' + autore + '\' , ' + prezzo + '  )">Modifica</button></td></tr>')   
+}
+
+function aggiornaTabellaLibriConLibriPresiDalServer(response) {
+    var libri = response.data;
+
+    maxPageNumber = response.maxPageNumber;
+    $.each (libri, aggiungiLibroATabella); //qui? cicla?si, $.each è una funzione di jQuery
+    //per ogni "libri" lancia aggioranTabellaLibri.
+    $("#pageNumber").text(globalPageNumber);
+    $("#maxPageNumber").text(maxPageNumber);
     
 }
 
@@ -122,26 +100,33 @@ function deleteBook(event) {
     //io mi ricarco (ma senza aspettare che tu l'abbia cancellata
 }
 
-function aggiornaTabellaLibri(pageNumber) {                
-    var filterTitle = $("#filterTitle").val();
-    var filterAuthor = $("#filterAuthor").val();
-    
-    $.ajax({        //jquery.ajax(): Esegue una richiesta HTTP asincrona (Ajax).
-        type : "POST",
-        url: "http://localhost:8888/libro",
-        data: {
-            titolo : filterTitle,
-            autore : filterAuthor,
-            pageNumber : pageNumber
-        } , //url da chiamare
-        dataType: 'json', //tipo di risposta che mi aspetto (un json)
-        success: aggiornaContenutoTabella //cosa me ne faccio del json? lo passo (come oggetto JS) ad una funzione, quale? aggiornaTabellaLibriConLibriPresiDalServer
-    });
+function showForm(bookId, bookTitle, bookAuthor, bookPrice){
+    if (!bookId) {
+        bookId = 0;
+        bookTitle = "";
+        bookAuthor = "";
+        bookPrice = "";
+    }
+    $("#bookId").val(bookId);
+    $("#bookTitle").val(bookTitle);
+    $("#bookAuthor").val(bookAuthor);
+    $("#bookPrice").val(bookPrice);
+    $("#manageBook").show();
+    $('#buttonNewBook').hide();
 }
 
-function aggiornaContenutoTabella(response) {
-    $("#listaLibri tbody").empty();
-    aggiornaTabellaLibriConLibriPresiDalServer(response)
+function hideMessageBox() {
+    $("#messageBox").hide();
+}
+    
+function hideBookForm() {
+    $("#manageBook").hide();
+    $('#buttonNewBook').show();
+    }
+
+function hideAlert() {
+    $("#bookAlert").hide();
+    $("#buttonNewBook").show();
 }
 
 function refreshList() {
@@ -161,11 +146,10 @@ function hideSearchMenu() {
     $("#searchButton").show();
 }
 
-
-
-globalPageNumber = 1;
-
-$(document).ready(aggiornaTabellaLibri(globalPageNumber));
+function aggiornaContenutoTabella(response) {
+    $("#listaLibri tbody").empty();
+    aggiornaTabellaLibriConLibriPresiDalServer(response)
+}
 
 function nextPage() {
     if (globalPageNumber < maxPageNumber) {
@@ -178,4 +162,8 @@ function previousPage() {
         globalPageNumber--;
         refreshList();
     }
-} 
+}
+
+globalPageNumber = 1;
+
+$(document).ready(aggiornaTabellaLibri(globalPageNumber));

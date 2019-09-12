@@ -14,6 +14,7 @@ if ($_SERVER['REQUEST_URI'] == '/libro') {
     $rowNumber = eseguoLaQueryDiCount($connection, $titolo, $autore);
     $maxPageNumber = ottengoIlMaxPageNumber($rowNumber, $pageSize);
     $data = eseguoLaQueryDiLetturaLibri($connection, $titolo, $autore, $fromRecord, $pageSize);
+
     echo json_encode(['data' => $data, 'maxPageNumber' => $maxPageNumber]);
 } elseif ($_SERVER['REQUEST_URI'] == '/salvalibro' && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $id = $_POST['id'];
@@ -21,14 +22,16 @@ if ($_SERVER['REQUEST_URI'] == '/libro') {
     $autore = $_POST['autore'];
     $prezzo = $_POST['prezzo'];
 
-    $salvaLibro = salvoIlLibro($connection, $titolo, $autore, $prezzo);
+    $salvaLibro = salvoIlLibro($connection, $titolo, $autore, $prezzo, $id);
 } elseif ($_SERVER['REQUEST_URI'] == '/cancellalibro' && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $id = $_POST['id'];
 
     $cancellaLibro = cancellaIlLibro($connection ,$id);
 } else {
-    echo "{
-        \"error\": \"Richiesta non supportata\"
+    
+    echo 
+    "{
+        \"errore\": \"Richiesta non supportata\"
     }";
 }
 
@@ -65,7 +68,7 @@ function eseguoLaQueryDiLetturaLibri($connection, $titolo, $autore, $fromRecord,
     return mysqli_fetch_all($records, MYSQLI_ASSOC);
 }
 
-function salvoIlLibro ($connection, $titolo, $autore, $prezzo) 
+function salvoIlLibro ($connection, $titolo, $autore, $prezzo, $id) 
 {
     if ($id == 0){
         $query = "INSERT INTO libri (title, author, price)  VALUES ('$titolo','$autore',$prezzo)";
