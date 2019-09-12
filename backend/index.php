@@ -21,11 +21,11 @@ if ($_SERVER['REQUEST_URI'] == '/libro') {
     $autore = $_POST['autore'];
     $prezzo = $_POST['prezzo'];
 
-    $salvaLibro = salvoIlLibro($connection, $titolo, $autore, $prezzo, $id);
+    $salvaLibro = salvoIlLibro($connection, $titolo, $autore, $prezzo);
 } elseif ($_SERVER['REQUEST_URI'] == '/cancellalibro' && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $id = $_POST['id'];
 
-    $cancellaLibro = cancellaIlLibro($connection, $id);
+    $cancellaLibro = cancellaIlLibro($connection ,$id);
 } else {
     echo "{
         \"error\": \"Richiesta non supportata\"
@@ -65,7 +65,7 @@ function eseguoLaQueryDiLetturaLibri($connection, $titolo, $autore, $fromRecord,
     return mysqli_fetch_all($records, MYSQLI_ASSOC);
 }
 
-function salvoIlLibro ($connection, $titolo, $autore, $prezzo, $id) 
+function salvoIlLibro ($connection, $titolo, $autore, $prezzo) 
 {
     if ($id == 0){
         $query = "INSERT INTO libri (title, author, price)  VALUES ('$titolo','$autore',$prezzo)";

@@ -36,7 +36,7 @@ function saveBook() {
         success: function(res){
             $("#messageBox").show();
             $("#messageBox").text("Hai inserito " + titolo);
-            setTimeout(hideMessageBox, 1000);
+            setTimeout(hideMessageBox, 3000);
             refreshList();
         }    
     });
@@ -113,7 +113,7 @@ function deleteBook(event) {
             refreshList();
             $("#messageBox").show();
             $("#messageBox").text("Hai cancellato " + titolo);
-            setTimeout(hideMessageBox, 1000);
+            setTimeout(hideMessageBox, 3000);
             }
     });
 
