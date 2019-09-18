@@ -2,8 +2,7 @@ function aggiornaTabellaLibri(pageNumber) {
     var filterTitle = $("#filterTitle").val();
     var filterAuthor = $("#filterAuthor").val();
     
-    $.ajax({        //jquery.ajax(): Esegue una richiesta HTTP asincrona (Ajax).
-        type : "POST",
+    $.post({        //jquery.ajax(): Esegue una richiesta HTTP asincrona (Ajax).
         url: "http://localhost:8888/libro",
         data: {
             titolo : filterTitle,
@@ -21,9 +20,9 @@ function saveBook() {
     var autore = $("#bookAuthor").val();
     var prezzo = $("#bookPrice").val();
 
-    $.ajax({
-        type : "POST",  
-        url  : "http://localhost:8888/salvalibro",  
+    $.post({
+        url  : "http://localhost:8888/salvalibro",
+        dataType: 'json',  
         data : { 
             id : id,
             titolo : titolo, 
@@ -31,10 +30,17 @@ function saveBook() {
             prezzo : prezzo
         }, 
         success: function(res){
+            var text = "Hai inserito " + titolo;
+            var color = "green";
+            if(!res.success){
+                text = res.errors;
+                color = "red";
+            }
             $("#messageBox").show();
-            $("#messageBox").text("Hai inserito " + titolo);
+            $("#messageBox").text(text);
+            $("#messageBox").css({"background-color": color, "border" : color});
             setTimeout(hideMessageBox, 3000);
-            refreshList();
+            refreshList();    
         }    
     });
     hideBookForm();
@@ -79,8 +85,7 @@ function deleteBook(event) {
     //se per ottenere il selettore devi usare jquery allora inizi ad avere le cascate di $($(....))
     //piu che altro, lanci un comando jq sull'output di un comando jquery
     
-    $.ajax({
-        type : "POST",  
+    $.post({
         url  : "http://localhost:8888/cancellalibro",  
         data : { 
             id : id

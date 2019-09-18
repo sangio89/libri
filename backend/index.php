@@ -23,6 +23,7 @@ if ($_SERVER['REQUEST_URI'] == '/libro') {
     $prezzo = $_POST['prezzo'];
 
     $salvaLibro = salvoIlLibro($connection, $titolo, $autore, $prezzo, $id);
+    echo json_encode($salvaLibro);
 } elseif ($_SERVER['REQUEST_URI'] == '/cancellalibro' && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $id = $_POST['id'];
 
@@ -70,12 +71,30 @@ function eseguoLaQueryDiLetturaLibri($connection, $titolo, $autore, $fromRecord,
 
 function salvoIlLibro ($connection, $titolo, $autore, $prezzo, $id) 
 {
-    if ($id == 0){
-        $query = "INSERT INTO libri (title, author, price)  VALUES ('$titolo','$autore',$prezzo)";
+    $uguaglianza = "SELECT * FROM libri WHERE (title = '$titolo' AND author = '$autore' AND price = $prezzo)";
+    $records = mysqli_query($connection, $uguaglianza);
+    $libriGiaEsistenti = mysqli_fetch_all($records, MYSQLI_ASSOC);
+    $result = [
+        'success' => true,
+        'errors' => [],
+    ];
+
+
+    if (empty($libriGiaEsistenti)){
+        if ($id == 0) { 
+            $query = "INSERT INTO libri (title, author, price)  VALUES ('$titolo','$autore',$prezzo)";
+        } else {
+            $query = "UPDATE libri SET title = '$titolo' , author = '$autore' , price = $prezzo WHERE libri.id = $id;";
+        }
+        mysqli_query($connection, $query);
     } else {
-        $query = "UPDATE libri SET title = '$titolo' , author = '$autore' , price = $prezzo WHERE libri.id = $id;";
+        $result['success'] = false;
+        $result['errors'] = [
+            'Esiste gia un libro con gli stessi valori'
+        ];          
     }
-    return mysqli_query($connection, $query);
+    return $result;
+    
 }
 
 function cancellaIlLibro ($connection, $id)
