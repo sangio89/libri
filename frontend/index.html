@@ -4,14 +4,70 @@
         <script src ="index.js"></script>
     </head>
    <style>
+        body { 
+            background:#484848;
+            color: black	
+        };
         #listaLibri {
             text-align: left;
             padding: 5px
         }
+        #body {
+            width: 550px;
+            height: 300px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            right:50%;
+            bottom:50%;
+            transform: translate(-50%, -50%);
+        }
+       #full {
+            background: grey;
+            border-radius: 15px;
+            width: 700px;
+            height: 550px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+       }
+       #searchButton {
+            position: absolute;
+            left:90%;
+            top: 5%;
+       }
+       #bottomMenu {
+            position: absolute;
+            left: 2%;
+            top: 90%;
+       }
+       #manageBook {
+            background: black;
+            border-radius: 10px;
+            padding: 10px;
+            position: absolute;
+            left: 35%;
+            top: 103%;
+       }
+       #filter {
+            background: #484848;
+            border-radius: 10px;
+            padding: 10px;
+            position: absolute;
+            left: 2%;
+            top: 10%;
+       }
+       #messageBox {
+        position: absolute;
+            left: 30%;
+            top: 110%;
+       }        
         
     </style>
+    <div id="full">
     <body>
-        <table><tr><td width='95%'><button id="searchButton" onclick="showSearchMenu()">Cerca</button></td><td width="5%"><h1>.ListaLibri</h1></td></tr></table>
+        <table><tr><td><button id="searchButton" onclick="showSearchMenu()">Cerca</button></td><td><h1>.ListaLibri</h1></td></tr></table>
         <div id="filter" style="display: none";>
                 Titolo
                 <input type="text" id="filterTitle">
@@ -20,27 +76,29 @@
             <button onclick="aggiornaTabellaLibri(1)">Filtra</button>
             <button onclick="hideSearchMenu()">Nascondi</button>
         </div>
-        <hr>
-        <table id="listaLibri" style="padding: 20px; border-spacing : 10px;  ">
-            <thead>
-                <th onclick="aggiornaTabellaLibri(1,'title')">Titolo</th>
-                <th onclick="aggiornaTabellaLibri(1,'author')">Autore</th>
-                <th onclick="aggiornaTabellaLibri(1,'price')">Prezzo</th>
+        <div id="body">
+        <table id="listaLibri" style="padding: 20px; border-spacing : 10px; border: solid white; border-radius: 10px; ">
+            <thead align=left>
+                <th width="40%" class="title" onclick="aggiornaTabellaLibri(1,'title')"> Titolo</th>
+                <th width="40%" class="author" onclick="aggiornaTabellaLibri(1,'author')"> Autore</th>
+                <th width="20%" class="price" onclick="aggiornaTabellaLibri(1,'price')"> Prezzo</th>
             </thead>
             <tbody>
             </tbody>
         </table>
-        <hr>
-        <table><tr><td><button id="buttonNewBook" onclick="showForm();">Nuovo Libro</button></td><td><button id="backButton" onclick="previousPage()"> <- </button> pagina <span id="pageNumber"></span> di <span id="maxPageNumber"></span> <button id="forwardButton" onclick="nextPage()"> -> </button></td></tr></table>
+        </div>    
+    </br>
+        <table id="bottomMenu"><tr><td><button id="buttonNewBook" onclick="showForm();">Nuovo Libro</button></td><td><button id="backButton" onclick="previousPage()"> <- </button> pagina <span id="pageNumber"></span> di <span id="maxPageNumber"></span> <button id="forwardButton" onclick="nextPage()"> -> </button></td></tr></table>
         <div id="manageBook" style="display: none;">
-            <strong>Gestore Libro</strong>
+            <strong>Gestore Libro</strong></br>
             <input type="text" id="bookId" style="display: none;"/>
             </br>Titolo:   <input type="text" id="bookTitle"/> <br/> Autore: 
-            <input type="text" id="bookAuthor"/> <br/> Prezzo:  <input type="text" id="bookPrice"/>
+            <input type="text" id="bookAuthor"/> <br/> Prezzo:  <input type="text" id="bookPrice"/></br>
             </br><button id="saveNewBook" onclick="saveBook();">Salva</button>
             <button id="backButton" onclick="hideBookForm();">Indietro</button>
         </div>
             </br>
             <div id="messageBox" style="display: none; background: red; border: 1px solid red; color: white; text-align: center; width : 50%; border-radius: 5px;"></div>
-        </body>
+    </div>
+    </body>
 </html>

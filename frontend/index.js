@@ -13,7 +13,10 @@ function aggiornaTabellaLibri(pageNumber, orderColumn) {
         globalOrderCriteria = 'ASC';
     }
     
-    $.post({        //jquery.ajax(): Esegue una richiesta HTTP asincrona (Ajax).
+    $("#sortIcon").remove();
+    $("." + orderColumn).prepend("<img id='sortIcon' src=' " + globalOrderCriteria + ".png' width=12 height=12/>")
+
+    $.post({        //jquery.ajax(): Esegue una richiesta HTTP asincrona (Ajax). post è come ajax ma definisce il parametro type = post.
         url: "http://localhost:8888/libro",
         data: {
             titolo : filterTitle,
@@ -21,12 +24,22 @@ function aggiornaTabellaLibri(pageNumber, orderColumn) {
             pageNumber : pageNumber,
             orderColumn : orderColumn,
             orderDirection : globalOrderCriteria,
-        } , //url da chiamare
+        } ,
         dataType: 'json', //tipo di risposta che mi aspetto (un json)
         success: aggiornaContenutoTabella //cosa me ne faccio del json? lo passo (come oggetto JS) ad una funzione, quale? aggiornaTabellaLibriConLibriPresiDalServer
     });
     
 
+}
+
+function setDesc() {
+    $("#asc").hide();
+    $("#desc").show();
+}
+
+function setAsc() {
+    $("#asc").show();
+    $("#desc").hide();
 }
 
 function saveBook() {
