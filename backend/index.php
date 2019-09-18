@@ -4,16 +4,22 @@ header('Access-Control-Allow-Origin: ' . $_SERVER['HTTP_ORIGIN']);
 header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
 header('Access-Control-Max-Age: 1000');
 header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+
 if ($_SERVER['REQUEST_URI'] == '/libro') {
     $titolo = $_POST['titolo'];
     $autore = $_POST['autore'];
     $pageNumber = $_POST['pageNumber'];
     $pageSize = 5;
     $fromRecord = ($pageNumber * $pageSize) - $pageSize;
-
+    $orderColumn = $_POST['orderColumn'];
+    $orderDirection = $_POST['orderDirection'];
     $rowNumber = eseguoLaQueryDiCount($connection, $titolo, $autore);
     $maxPageNumber = ottengoIlMaxPageNumber($rowNumber, $pageSize);
-    $data = eseguoLaQueryDiLetturaLibri($connection, $titolo, $autore, $fromRecord, $pageSize);
+    if ($orderColumn == NULL || $orderDirection == NULL) {
+        $data = eseguoLaQueryDiLetturaLibri($connection, $titolo, $autore, $fromRecord, $pageSize);
+    } else {
+        $data = eseguoLaQueryDiLetturaLibri($connection, $titolo, $autore, $fromRecord, $pageSize, $orderColumn, $orderDirection);
+    }
 
     echo json_encode(['data' => $data, 'maxPageNumber' => $maxPageNumber]);
 } elseif ($_SERVER['REQUEST_URI'] == '/salvalibro' && $_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -57,16 +63,16 @@ function ottengoIlMaxPageNumber($countRow, $pageSize)
     return $maxPageNumber;
 }
 
-function eseguoLaQueryDiLetturaLibri($connection, $titolo, $autore, $fromRecord, $pageSize)
+function eseguoLaQueryDiLetturaLibri($connection, $titolo, $autore, $fromRecord, $pageSize, $orderColumn = 'title', $orderDirection = 'ASC')
 {
     $query = "SELECT id, title, author, price FROM libri";
     if ($titolo !== null || $autore !== null) {
         $query .= " WHERE title LIKE '$titolo%' AND author LIKE '$autore%'";
     }
-    $query .= " ORDER BY title ASC LIMIT $fromRecord, $pageSize";
-
+    $query .= " ORDER BY $orderColumn $orderDirection LIMIT $fromRecord, $pageSize";
     $records = mysqli_query($connection, $query);
-    return mysqli_fetch_all($records, MYSQLI_ASSOC);
+    $esegui = mysqli_fetch_all($records, MYSQLI_ASSOC);
+    return $esegui;
 }
 
 function salvoIlLibro ($connection, $titolo, $autore, $prezzo, $id) 

@@ -1,17 +1,32 @@
-function aggiornaTabellaLibri(pageNumber) {                
+
+function aggiornaTabellaLibri(pageNumber, orderColumn) {          
     var filterTitle = $("#filterTitle").val();
     var filterAuthor = $("#filterAuthor").val();
+    
+    if (globalOrderCriteria) {
+        if (globalOrderCriteria == "ASC") {
+            globalOrderCriteria = "DESC";
+        } else {
+            globalOrderCriteria = "ASC";
+        }
+    } else {
+        globalOrderCriteria = 'ASC';
+    }
     
     $.post({        //jquery.ajax(): Esegue una richiesta HTTP asincrona (Ajax).
         url: "http://localhost:8888/libro",
         data: {
             titolo : filterTitle,
             autore : filterAuthor,
-            pageNumber : pageNumber
+            pageNumber : pageNumber,
+            orderColumn : orderColumn,
+            orderDirection : globalOrderCriteria,
         } , //url da chiamare
         dataType: 'json', //tipo di risposta che mi aspetto (un json)
         success: aggiornaContenutoTabella //cosa me ne faccio del json? lo passo (come oggetto JS) ad una funzione, quale? aggiornaTabellaLibriConLibriPresiDalServer
     });
+    
+
 }
 
 function saveBook() {
@@ -170,5 +185,6 @@ function previousPage() {
 }
 
 globalPageNumber = 1;
+globalOrderCriteria = "";
 
 $(document).ready(aggiornaTabellaLibri(globalPageNumber));
