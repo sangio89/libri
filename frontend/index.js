@@ -74,7 +74,7 @@ function saveBook() {
     hideBookForm();
 }
 
-function aggiungiLibroATabella(index, libro, autore, prezzo) {
+function aggiungiLibroATabella(index, libro, autore, prezzo) {  //foreach jquery
     //qua dentro, come da documentazione, hai index = 1,2,3 a seconda dell'iterazione in cui ti trovi
     //e libro contiene il libro (e.g. {titolo: 'guido', autore:'g.s.', prezzo:19})
     //quindi ti salvi i suoi attributi in variabili i li usi per appendere una <tr>
@@ -128,9 +128,6 @@ function deleteBook(event) {
             }
     });
 
-    //se lanci refreshList qua, tu stai dicendo:
-    //hey server, cancella la riga 1
-    //io mi ricarco (ma senza aspettare che tu l'abbia cancellata
 }
 
 function showForm(bookId, bookTitle, bookAuthor, bookPrice){
