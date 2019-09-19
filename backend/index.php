@@ -29,15 +29,21 @@ if ($_SERVER['REQUEST_URI'] == '/libro') {
 } elseif ($_SERVER['REQUEST_URI'] == '/salvalibro' && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $libroController->insertAction();
 } elseif ($_SERVER['REQUEST_URI'] == '/cancellalibro' && $_SERVER['REQUEST_METHOD'] == 'POST') {
-    $id = $_POST['id'];
-
-    $cancellaLibro = cancellaIlLibro($connection ,$id);
+    //$id = $_POST['id'];
+    $libroController->deleteAction();
+    //$cancellaLibro = cancellaIlLibro($connection ,$id);
 } else {
     
     echo 
     "{
         \"errore\": \"Richiesta non supportata\"
     }";
+}
+
+function cancellaIlLibro ($connection, $id)
+{
+    $query = "DELETE FROM `libri` WHERE `libri`.`id` = $id;";
+    return mysqli_query($connection, $query);
 }
 
 function eseguoLaQueryDiCount($connection, $titolo, $autore)
@@ -99,10 +105,4 @@ function salvoIlLibro ($connection, $titolo, $autore, $prezzo, $id)
     }
     return $result;
     
-}
-
-function cancellaIlLibro ($connection, $id)
-{
-    $query = "DELETE FROM `libri` WHERE `libri`.`id` = $id;";
-    return mysqli_query($connection, $query);
 }

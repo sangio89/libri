@@ -21,11 +21,13 @@ class LibriController {
             $autore,
             $prezzo
         ];
-        $libro = new LibriModel($this->connection);
-        $libro->insert($data);
+        $insertLibro = new LibriModel($this->connection);
+        $insertLibro->insert($data);
     }
 
     public function deleteAction() {
-
+        $id = $_POST['id'];
+        $deleteLibro = new LibriModel($this->connection);
+        $deleteLibro->delete($id);
     }
 }

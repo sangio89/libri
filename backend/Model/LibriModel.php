@@ -4,6 +4,7 @@ namespace Model;
 
 class LibriModel {
     public $connection;
+    protected $tableName = 'libri';
     public $fields = [
         'id',
         'title',
@@ -16,12 +17,13 @@ class LibriModel {
     }
 
     public function insert($data) {
-        $insertQuery = "INSERT INTO libri ( ". $this->fields[1] . "," . $this->fields[2] . "," . $this->fields[3] . ") 
+        $insertQuery = "INSERT INTO " . $this->tableName ." ( ". $this->fields[1] . "," . $this->fields[2] . "," . $this->fields[3] . ") 
         VALUES ('" . $data[0] . "', '" . $data[1] . "', " . $data[2] .");";
-        $doQuery = mysqli_query($this->connection, $insertQuery);
+        $doInsertQuery = mysqli_query($this->connection, $insertQuery);
     }
 
-    public function delete() {
-        
+    public function delete($id) {
+        $deleteQuery = "DELETE FROM " . $this->tableName ." WHERE id = " . $id . ";";
+        $doDeleteQuery = mysqli_query($this->connection, $deleteQuery);
     }
 }
