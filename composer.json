@@ -1,0 +1,12 @@
+{
+    "name": "umbe/progetto_libri",
+    "authors": [
+        {
+            "name": "sangio89",
+            "email": "sangiovanni.umberto@yahoo.it"
+        }
+    ],
+    "require": {
+        "silex/silex": "^2.3"
+    }
+}
