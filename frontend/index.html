@@ -7,7 +7,12 @@
         body { 
             background:#484848;
             color: black	
-        };
+        }
+        #h1 {
+            position: absolute;
+            left: 2%;
+            top: 1%;
+        }
         #listaLibri {
             text-align: left;
             padding: 5px
@@ -71,7 +76,7 @@
     </style>
     <div id="full">
     <body>
-        <table><tr><td><button id="searchButton" onclick="showSearchMenu()">Cerca</button></td><td><h1>.ListaLibri</h1></td></tr></table>
+        <table><tr><td><button id="searchButton" onclick="showSearchMenu()">Cerca</button></td><td><h1 id="h1">.ListaLibri</h1></td></tr></table>
         <div id="filter" style="display: none";>
                 Titolo
                 <input type="text" id="filterTitle">

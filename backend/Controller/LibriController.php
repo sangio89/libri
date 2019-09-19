@@ -24,16 +24,19 @@ class LibriController {
         ]; 
         if ($id == 0) { 
             $insertLibro = new LibriModel($this->connection);
-            $insertLibro->insert($data);
+            $result = $insertLibro->insert($data);
+            echo json_encode($result);
         } else {
             $editLibro = new LibriModel($this->connection);
-            $editLibro->edit($data, $id);
+            $result = $editLibro->edit($data, $id);
+            echo json_encode($result);
         }
     }   
 
     public function deleteAction() {
         $id = $_POST['id'];
         $deleteLibro = new LibriModel($this->connection);
-        $deleteLibro->delete($id);
+        $result = $deleteLibro->delete($id);
+        echo json_encode($result);
     }
 }

@@ -58,7 +58,11 @@ function saveBook() {
             prezzo : prezzo
         }, 
         success: function(res){
-            var text = "Hai inserito " + titolo;
+            if(id == 0) {
+                var text = "Hai inserito " + titolo;
+            } else {
+            var text = "Hai modificato " + titolo;
+            }
             var color = "green";
             if(!res.success){
                 text = res.errors;
@@ -105,6 +109,7 @@ function aggiornaTabellaLibriConLibriPresiDalServer(response) {
 function deleteBook(event) {
     
     var id =$($(event.target).parent().parent().children()[0]).attr('value');
+    var text = $($(event.target).parent().parent().children()[1]).text();
     //ok, da capire c'è solo la differenza fra 
     //accedere ad unn oggetto del DOM
     //accedere ad un oggeto del DOM tramite jQuery
@@ -115,18 +120,23 @@ function deleteBook(event) {
     
     $.post({
         url  : "http://localhost:8888/cancellalibro",  
+        dataType : 'json',
         data : { 
             id : id
         }, 
         success: function(res) {
-            
-            var titolo = $($(event.target).parent().parent().children()[1]).text();
-            refreshList();
-            $("#messageBox").show();
-            $("#messageBox").text("Hai cancellato " + titolo);
-            setTimeout(hideMessageBox, 3000);
+            var color = "green";
+            if(!res.success){
+                text = res.errors;
+                color = "red";
             }
-    });
+            $("#messageBox").show();
+            $("#messageBox").text("Hai cancellato " + text);
+            $("#messageBox").css({"background-color": color, "border" : color});
+            setTimeout(hideMessageBox, 3000);
+            refreshList();
+            } 
+        });
 
 }
 

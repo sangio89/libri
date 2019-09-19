@@ -19,16 +19,50 @@ class LibriModel {
     public function insert($data) {
         $insertQuery = "INSERT INTO " . $this->tableName ." ( ". $this->fields[1] . "," . $this->fields[2] . "," . $this->fields[3] . ") 
         VALUES ('" . $data[0] . "', '" . $data[1] . "', " . $data[2] .");";
-        $doInsertQuery = mysqli_query($this->connection, $insertQuery);
+        $result = mysqli_query($this->connection, $insertQuery);
+        if ($result == true) { 
+            return [
+                'success' => true,
+                'errors' => [],
+            ];
+        } else {
+            return [
+                'success' => false,
+                'errors' => "Qualquadra non cosa",
+            ];
+        }
     }
 
     public function delete($id) {
         $deleteQuery = "DELETE FROM " . $this->tableName ." WHERE id = " . $id . ";";
-        $doDeleteQuery = mysqli_query($this->connection, $deleteQuery);
+        $result = mysqli_query($this->connection, $deleteQuery);
+        if ($result == true) { 
+            return [
+                'success' => true,
+                'errors' => [],
+            ];
+        } else {
+            return [
+                'success' => false,
+                'errors' => "Qualquadra non cosa",
+            ];
+        }
     }
 
     public function edit($data, $id) {
-        $editQuery = "UPDATE " . $this->tableName . " SET title = '". $data[0] ."', author = '". $data[1] ."' , price = ". $data[2] ." WHERE libri.id = ". $id ." ;";
-        $doEditQuery = mysqli_query($this->connection, $editQuery);
+        $editQuery = "UPDATE " . $this->tableName . " SET ". $this->fields[1] ." = '". $data[0] ."', ". $this->fields[2] .
+        " = '". $data[1] ."' , ". $this->fields[3] ." = ". $data[2] ." WHERE ". $this->fields[0] ." = ". $id ." ;";
+        $result = mysqli_query($this->connection, $editQuery);
+        if ($result == true) { 
+            return [
+                'success' => true,
+                'errors' => [],
+            ];
+        } else {
+            return [
+                'success' => false,
+                'errors' => "Qualquadra non cosa",
+            ];
+        }
     }
 }
