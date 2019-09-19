@@ -1,9 +1,13 @@
 <?php
 require_once('connection.php');
+require_once('../vendor/autoload.php');
 header('Access-Control-Allow-Origin: ' . $_SERVER['HTTP_ORIGIN']);
 header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
 header('Access-Control-Max-Age: 1000');
 header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+use Controller\LibriController;
+
+$libroController = new LibriController($connection);
 
 if ($_SERVER['REQUEST_URI'] == '/libro') {
     $titolo = $_POST['titolo'];
@@ -23,13 +27,7 @@ if ($_SERVER['REQUEST_URI'] == '/libro') {
 
     echo json_encode(['data' => $data, 'maxPageNumber' => $maxPageNumber]);
 } elseif ($_SERVER['REQUEST_URI'] == '/salvalibro' && $_SERVER['REQUEST_METHOD'] == 'POST') {
-    $id = $_POST['id'];
-    $titolo = $_POST['titolo'];
-    $autore = $_POST['autore'];
-    $prezzo = $_POST['prezzo'];
-
-    $salvaLibro = salvoIlLibro($connection, $titolo, $autore, $prezzo, $id);
-    echo json_encode($salvaLibro);
+    $libroController->insertAction();
 } elseif ($_SERVER['REQUEST_URI'] == '/cancellalibro' && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $id = $_POST['id'];
 
