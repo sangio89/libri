@@ -13,6 +13,7 @@ class LibriController {
     }
 
     public function insertAction() {
+        $id = $_POST['id'];
         $titolo = $_POST['titolo'];
         $autore = $_POST['autore'];
         $prezzo = $_POST['prezzo'];
@@ -20,10 +21,15 @@ class LibriController {
             $titolo,
             $autore,
             $prezzo
-        ];
-        $insertLibro = new LibriModel($this->connection);
-        $insertLibro->insert($data);
-    }
+        ]; 
+        if ($id == 0) { 
+            $insertLibro = new LibriModel($this->connection);
+            $insertLibro->insert($data);
+        } else {
+            $editLibro = new LibriModel($this->connection);
+            $editLibro->edit($data, $id);
+        }
+    }   
 
     public function deleteAction() {
         $id = $_POST['id'];

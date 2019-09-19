@@ -29,9 +29,7 @@ if ($_SERVER['REQUEST_URI'] == '/libro') {
 } elseif ($_SERVER['REQUEST_URI'] == '/salvalibro' && $_SERVER['REQUEST_METHOD'] == 'POST') {
     $libroController->insertAction();
 } elseif ($_SERVER['REQUEST_URI'] == '/cancellalibro' && $_SERVER['REQUEST_METHOD'] == 'POST') {
-    //$id = $_POST['id'];
     $libroController->deleteAction();
-    //$cancellaLibro = cancellaIlLibro($connection ,$id);
 } else {
     
     echo 
@@ -93,8 +91,10 @@ function salvoIlLibro ($connection, $titolo, $autore, $prezzo, $id)
     if (empty($libriGiaEsistenti)){
         if ($id == 0) { 
             $query = "INSERT INTO libri (title, author, price)  VALUES ('$titolo','$autore',$prezzo)";
+
         } else {
             $query = "UPDATE libri SET title = '$titolo' , author = '$autore' , price = $prezzo WHERE libri.id = $id;";
+            
         }
         mysqli_query($connection, $query);
     } else {

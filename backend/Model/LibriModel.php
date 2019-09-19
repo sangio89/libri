@@ -26,4 +26,9 @@ class LibriModel {
         $deleteQuery = "DELETE FROM " . $this->tableName ." WHERE id = " . $id . ";";
         $doDeleteQuery = mysqli_query($this->connection, $deleteQuery);
     }
+
+    public function edit($data, $id) {
+        $editQuery = "UPDATE " . $this->tableName . " SET title = '". $data[0] ."', author = '". $data[1] ."' , price = ". $data[2] ." WHERE libri.id = ". $id ." ;";
+        $doEditQuery = mysqli_query($this->connection, $editQuery);
+    }
 }
