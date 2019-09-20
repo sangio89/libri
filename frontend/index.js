@@ -58,10 +58,9 @@ function saveBook() {
             prezzo : prezzo
         }, 
         success: function(res){
+            var text = "Hai modificato " + titolo;
             if(id == 0) {
                 var text = "Hai inserito " + titolo;
-            } else {
-            var text = "Hai modificato " + titolo;
             }
             var color = "green";
             if(!res.success){

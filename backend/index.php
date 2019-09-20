@@ -38,12 +38,6 @@ if ($_SERVER['REQUEST_URI'] == '/libro') {
     }";
 }
 
-function cancellaIlLibro ($connection, $id)
-{
-    $query = "DELETE FROM `libri` WHERE `libri`.`id` = $id;";
-    return mysqli_query($connection, $query);
-}
-
 function eseguoLaQueryDiCount($connection, $titolo, $autore)
 {
     $query = "SELECT COUNT(*) AS TOTALE_LIBRI FROM libri";
@@ -75,34 +69,4 @@ function eseguoLaQueryDiLetturaLibri($connection, $titolo, $autore, $fromRecord,
     $records = mysqli_query($connection, $query);
     $esegui = mysqli_fetch_all($records, MYSQLI_ASSOC);
     return $esegui;
-}
-
-function salvoIlLibro ($connection, $titolo, $autore, $prezzo, $id) 
-{
-    $uguaglianza = "SELECT * FROM libri WHERE (title = '$titolo' AND author = '$autore' AND price = $prezzo)";
-    $records = mysqli_query($connection, $uguaglianza);
-    $libriGiaEsistenti = mysqli_fetch_all($records, MYSQLI_ASSOC);
-    $result = [
-        'success' => true,
-        'errors' => [],
-    ];
-
-
-    if (empty($libriGiaEsistenti)){
-        if ($id == 0) { 
-            $query = "INSERT INTO libri (title, author, price)  VALUES ('$titolo','$autore',$prezzo)";
-
-        } else {
-            $query = "UPDATE libri SET title = '$titolo' , author = '$autore' , price = $prezzo WHERE libri.id = $id;";
-            
-        }
-        mysqli_query($connection, $query);
-    } else {
-        $result['success'] = false;
-        $result['errors'] = [
-            'Esiste gia un libro con gli stessi valori'
-        ];          
-    }
-    return $result;
-    
 }
