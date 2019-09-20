@@ -17,11 +17,11 @@ class LibriModel {
     }
 
     public function insert($data) {
-        foreach ($data[0] as $titleValue) {
-            $titleValue = "mysqli_real_escape_string (' . $this->connection . '., ' . $data[0] . ')"; //DA RISOLVERE
-         }
+        $titleValue = mysqli_real_escape_string ($this->connection, $data[0]); 
+        $authorValue = mysqli_real_escape_string ($this->connection, $data[1]); 
         $insertQuery = "INSERT INTO " . $this->tableName ." ( ". $this->fields[1] . "," . $this->fields[2] . "," . $this->fields[3] . ") 
-        VALUES (" . $titleValue . ", '" . $data[1] . "', " . $data[2] .");";var_dump($titleValue);die;
+        VALUES ('" . $titleValue . "', '" . $authorValue . "', " . $data[2] .");";
+
         $result = mysqli_query($this->connection, $insertQuery);
         if ($result == true) { 
             return [
